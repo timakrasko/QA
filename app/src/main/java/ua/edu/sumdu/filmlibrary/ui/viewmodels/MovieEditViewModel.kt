@@ -7,31 +7,50 @@ import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import ua.edu.sumdu.filmlibrary.data.Movie
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import ua.edu.sumdu.filmlibrary.repository.MovieRepository
+import ua.edu.sumdu.filmlibrary.ui.screen.MovieEditDestination
 import java.io.File
 import java.io.FileOutputStream
 
-class MovieEntryViewModel(private val movieRepository: MovieRepository) : ViewModel() {
+class MovieEditViewModel(
+    savedStateHandle: SavedStateHandle,
+    private val movieRepository: MovieRepository
+) : ViewModel(){
+
     var movieUiState by mutableStateOf(MovieUiState())
         private set
 
-    fun updateUiState (movieDetails: MovieDetails) {
-        movieUiState =
-            MovieUiState(movieDetails = movieDetails, isEntryValid = validateInput(movieDetails))
+    private val movieId: Int = checkNotNull(savedStateHandle[MovieEditDestination.movieIdArg])
+
+    init {
+        viewModelScope.launch {
+            movieUiState = movieRepository.getMovieStream(movieId)
+                .filterNotNull()
+                .first()
+                .toMovieUiState()
+        }
     }
 
     private fun validateInput(uiState: MovieDetails = movieUiState.movieDetails): Boolean {
-        return  with(uiState) {
+        return with(uiState) {
             title.isNotBlank() && description.isNotBlank()
         }
     }
 
-    suspend fun saveMovie() {
-        if (validateInput()) {
-            movieRepository.insertMovie(movieUiState.movieDetails.toMovie())
+    suspend fun updateMovie() {
+        if (validateInput(movieUiState.movieDetails)) {
+            movieRepository.updateMovie(movieUiState.movieDetails.toMovie())
         }
+    }
+
+    fun updateUiState(movieDetails: MovieDetails) {
+        movieUiState = MovieUiState(movieDetails = movieDetails, isEntryValid = validateInput(movieDetails))
     }
 
     fun savePosterImage(context: Context, uri: Uri): String? {
@@ -58,37 +77,3 @@ class MovieEntryViewModel(private val movieRepository: MovieRepository) : ViewMo
         }
     }
 }
-
-data class MovieUiState(
-    val movieDetails: MovieDetails = MovieDetails(),
-    val isEntryValid: Boolean = false
-)
-
-data class MovieDetails(
-    val id: Int = 0,
-    val title: String = "",
-    val description: String = "",
-    val posterPath: String = ""
-)
-
-fun MovieDetails.toMovie(): Movie = Movie(
-    id = id,
-    title = title,
-    description = description,
-    posterPath = posterPath,
-    addedBy = ""
-)
-
-
-fun Movie.toMovieUiState(isEntryValid: Boolean = false): MovieUiState = MovieUiState(
-    movieDetails = this.toMovieDetails(),
-    isEntryValid = isEntryValid
-)
-
-
-fun Movie.toMovieDetails(): MovieDetails = MovieDetails(
-    id = id,
-    title = title,
-    description = description,
-    posterPath = posterPath
-)

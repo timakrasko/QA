@@ -10,6 +10,8 @@ import androidx.navigation.navArgument
 import ua.edu.sumdu.filmlibrary.ui.screen.MainDestination
 import ua.edu.sumdu.filmlibrary.ui.screen.MainScreen
 import ua.edu.sumdu.filmlibrary.ui.screen.MovieDestination
+import ua.edu.sumdu.filmlibrary.ui.screen.MovieEditDestination
+import ua.edu.sumdu.filmlibrary.ui.screen.MovieEditScreen
 import ua.edu.sumdu.filmlibrary.ui.screen.MovieEntryDestination
 import ua.edu.sumdu.filmlibrary.ui.screen.MovieEntryScreen
 import ua.edu.sumdu.filmlibrary.ui.screen.MovieScreen
@@ -45,8 +47,19 @@ fun MovieNavHost(
             })
         ) {
             MovieScreen(
-                navigateToEditMovie = { navController.navigateUp() },
+                navigateToEditMovie = { navController.navigate("${MovieEditDestination.route}/$it") },
                 navigateBack = { navController.navigateUp() }
+            )
+        }
+        composable(
+            route = MovieEditDestination.routeWithArgs,
+            arguments = listOf(navArgument(MovieDestination.movieIdArg) {
+                type = NavType.IntType
+            })
+        ) {
+            MovieEditScreen(
+                navigateBack = { navController.popBackStack() },
+                onNavigateUp = { navController.navigateUp() }
             )
         }
     }

@@ -118,14 +118,14 @@ fun MovieEntryBody(
         )
 
         Button(
-            onClick = onImageSelectClick, // Кнопка вибору зображення
+            onClick = onImageSelectClick,
             shape = MaterialTheme.shapes.small,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = stringResource(R.string.select_image))
         }
         movieUiState.movieDetails.posterPath.takeIf { it.isNotBlank() }?.let { imagePath ->
-            Text(text = "Selected image: $imagePath") // Виведення шляху до вибраного зображення
+            Text(text = "Selected image: $imagePath")
         }
 
         Button(

@@ -158,7 +158,7 @@ fun MovieDetails(
     movie: Movie, modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = modifier.height(170.dp),
+        modifier = modifier.height(180.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             contentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -168,7 +168,7 @@ fun MovieDetails(
             modifier = Modifier.fillMaxWidth()
         ) {
             val painter = rememberAsyncImagePainter(
-                model = movie.posterPath.takeIf { it.isNotBlank() }?.toUri() ?: R.drawable.lotr
+                model = movie.posterPath.takeIf { it.isNotBlank() }?.toUri() ?: R.drawable.ball_640x480
             )
             Image(
                 painter = painter,
