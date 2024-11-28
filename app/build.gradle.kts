@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "ua.edu.sumdu.filmlibrary"
+    namespace = "ua.edu.sumdu.library"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "ua.edu.sumdu.filmlibrary"
+        applicationId = "ua.edu.sumdu.library"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -62,7 +62,9 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.junit.ktx)
     testImplementation(libs.junit)
+    testImplementation(libs.junit.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
@@ -70,12 +72,16 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    // https://mvnrepository.com/artifact/androidx.room/room-runtime
     implementation("androidx.room:room-runtime:2.6.1")
-    // https://mvnrepository.com/artifact/androidx.room/room-compiler
     ksp("androidx.room:room-compiler:2.6.1")
-    // https://mvnrepository.com/artifact/androidx.room/room-ktx
     implementation("androidx.room:room-ktx:2.6.1")
 
     implementation("io.coil-kt:coil-compose:2.1.0")
+    testImplementation ("junit:junit:4.13.2")
+    testImplementation ("org.mockito:mockito-core:4.0.0")
+    testImplementation ("org.mockito:mockito-inline:4.0.0")
+    testImplementation ("androidx.test.ext:junit:1.1.5")
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.11.3")
+
 }
